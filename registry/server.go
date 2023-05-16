@@ -14,12 +14,12 @@ import (
 const ServerPort = ":3000"
 const ServicesURL = "http://localhost" + ServerPort + "/services"
 
-type registry struct {
-	registrations []Registration
-	mutex         *sync.RWMutex
+type registry struct { //小写，是私有的
+	registrations []Registration //registration.go文件中的结构
+	mutex         *sync.RWMutex  //用来锁上面这个资源防止同时访问
 }
 
-func (r *registry) add(reg Registration) error {
+func (r *registry) add(reg Registration) error { //registry类的方法，作用是添加reg到slice中
 	r.mutex.Lock()
 	r.registrations = append(r.registrations, reg)
 	r.mutex.Unlock()
@@ -139,7 +139,7 @@ func (r *registry) heartbeat(freq time.Duration) {
 						if !success {
 							r.add(reg)
 						}
-						break;
+						break
 					}
 					log.Printf("Heartbeat check failed for %v", reg.ServiceName)
 					if success {
@@ -163,18 +163,18 @@ func SetupRegistryService() {
 	})
 }
 
-var reg = registry{
+var reg = registry{ //初始化一个registry结构
 	registrations: make([]Registration, 0),
 	mutex:         new(sync.RWMutex),
 }
 
-type RegistryService struct{}
+type RegistryService struct{} //空类，只是用于实现方法
 
-func (s RegistryService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s RegistryService) ServeHTTP(w http.ResponseWriter, r *http.Request) { //实现了这个函数就成为了Handle函数的第二个接口了
 	log.Println("Request received")
 	switch r.Method {
 	case http.MethodPost:
-		dec := json.NewDecoder(r.Body)
+		dec := json.NewDecoder(r.Body) //解析报文结构体
 		var r Registration
 		err := dec.Decode(&r)
 		if err != nil {
@@ -184,7 +184,7 @@ func (s RegistryService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("Adding service: %v with URL: %s\n", r.ServiceName,
 			r.ServiceURL)
-		err = reg.add(r)
+		err = reg.add(r) //将本次服务注册到管理中
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusBadRequest)

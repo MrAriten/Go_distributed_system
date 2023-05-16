@@ -1,8 +1,8 @@
 package main
 
 import (
+	"Go_distributed_system/registry"
 	"context"
-	"distributed/registry"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 
 func main() {
 	registry.SetupRegistryService()
-	http.Handle("/services", &registry.RegistryService{})
+	http.Handle("/services", &registry.RegistryService{}) //RegistryService{}实现了第二个参数的接口功能//将注册服务函数注册到HTTP处理服务上
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -31,6 +31,6 @@ func main() {
 		cancel()
 	}()
 
-	<- ctx.Done()
+	<-ctx.Done()
 	fmt.Println("Shutting down registry service")
 }

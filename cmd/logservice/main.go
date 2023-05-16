@@ -1,16 +1,16 @@
 package main
 
 import (
+	"Go_distributed_system/log"
+	"Go_distributed_system/registry"
+	"Go_distributed_system/service"
 	"context"
-	"distributed/log"
-	"distributed/registry"
-	"distributed/service"
 	"fmt"
 	stlog "log"
 )
 
 func main() {
-	log.Run("./distributed.log")
+	log.Run("./distributed.log") //log文件的名字
 	host, port := "localhost", "4000"
 	serviceAddress := fmt.Sprintf("http://%s:%s", host, port)
 
@@ -19,7 +19,7 @@ func main() {
 		ServiceURL:       serviceAddress,
 		RequiredServices: make([]registry.ServiceName, 0),
 		ServiceUpdateURL: serviceAddress + "/services",
-		HeartbeatURL: serviceAddress + "/heartbeat",
+		HeartbeatURL:     serviceAddress + "/heartbeat",
 	}
 	ctx, err := service.Start(
 		context.Background(),
@@ -32,7 +32,7 @@ func main() {
 	if err != nil {
 		stlog.Fatalln(err)
 	}
-	<-ctx.Done()
+	<-ctx.Done() //阻塞操作，直到上下文被取消
 
 	fmt.Println("Shutting down log service.")
 }
