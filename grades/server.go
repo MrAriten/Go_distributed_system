@@ -16,15 +16,15 @@ func RegisterHandlers() {
 	http.Handle("/students/", handler)
 }
 
-type studentsHandler struct{}
+type studentsHandler struct{} //创建handler的空接口
 
-// /students
-// /students/{id}
-// /students/{id}/grades
+// /students case 2
+// /students/{id} case 3
+// /students/{id}/grades case 4
 func (sh studentsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	pathSegments := strings.Split(r.URL.Path, "/")
+	pathSegments := strings.Split(r.URL.Path, "/") //按照URL的斜杠数分类
 	switch len(pathSegments) {
-	case 2:
+	case 2: //查询所有学生
 		sh.getAll(w, r)
 	case 3:
 		id, err := strconv.Atoi(pathSegments[2])
@@ -45,7 +45,7 @@ func (sh studentsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (sh studentsHandler) getAll(w http.ResponseWriter, r *http.Request) {
+func (sh studentsHandler) getAll(w http.ResponseWriter, r *http.Request) { //获取所有学生的信息
 	studentsMutex.Lock()
 	defer studentsMutex.Unlock()
 
@@ -59,7 +59,7 @@ func (sh studentsHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func (sh studentsHandler) getOne(w http.ResponseWriter, r *http.Request, id int) {
+func (sh studentsHandler) getOne(w http.ResponseWriter, r *http.Request, id int) { //只获取一个学生的信息
 	studentsMutex.Lock()
 	defer studentsMutex.Unlock()
 
@@ -80,7 +80,7 @@ func (sh studentsHandler) getOne(w http.ResponseWriter, r *http.Request, id int)
 	w.Write(data)
 }
 
-func (sh studentsHandler) addGrade(w http.ResponseWriter, r *http.Request, id int) {
+func (sh studentsHandler) addGrade(w http.ResponseWriter, r *http.Request, id int) { //添加成绩
 	studentsMutex.Lock()
 	defer studentsMutex.Unlock()
 
@@ -109,7 +109,7 @@ func (sh studentsHandler) addGrade(w http.ResponseWriter, r *http.Request, id in
 	w.Write(data)
 }
 
-func (sh studentsHandler) toJSON(obj interface{}) ([]byte, error) {
+func (sh studentsHandler) toJSON(obj interface{}) ([]byte, error) { //将
 	var b bytes.Buffer
 	enc := json.NewEncoder(&b)
 	err := enc.Encode(obj)

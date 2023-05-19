@@ -1,6 +1,6 @@
 package grades
 
-func init() {
+func init() { //学生的初始化
 	students = []Student{
 		{
 			ID:        1,

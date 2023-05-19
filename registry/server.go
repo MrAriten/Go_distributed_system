@@ -23,8 +23,8 @@ func (r *registry) add(reg Registration) error { //registry类的方法，作用
 	r.mutex.Lock()
 	r.registrations = append(r.registrations, reg)
 	r.mutex.Unlock()
-	err := r.sendRequiredServices(reg)
-	r.notify(patch{
+	err := r.sendRequiredServices(reg) //发送所要依赖的请求，查看patch中是否存在
+	r.notify(patch{                    //add服务的时候进行更新，通知服务器
 		Added: []patchEntry{
 			patchEntry{
 				Name: reg.ServiceName,
@@ -38,10 +38,10 @@ func (r *registry) add(reg Registration) error { //registry类的方法，作用
 func (r registry) notify(fullPatch patch) {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
-	for _, reg := range r.registrations {
+	for _, reg := range r.registrations { //从已注册的服务里挑选
 		go func(reg Registration) {
-			for _, reqService := range reg.RequiredServices {
-				p := patch{Added: []patchEntry{}, Removed: []patchEntry{}}
+			for _, reqService := range reg.RequiredServices { //遍历所有需要的服务
+				p := patch{Added: []patchEntry{}, Removed: []patchEntry{}} //创建新的patch
 				sendUpdate := false
 				for _, added := range fullPatch.Added {
 					if added.Name == reqService {
@@ -56,7 +56,7 @@ func (r registry) notify(fullPatch patch) {
 					}
 				}
 				if sendUpdate {
-					err := r.sendPatch(p, reg.ServiceUpdateURL)
+					err := r.sendPatch(p, reg.ServiceUpdateURL) //更新目前拥有的patch服务
 					if err != nil {
 						log.Println(err)
 						return
@@ -69,14 +69,14 @@ func (r registry) notify(fullPatch patch) {
 }
 
 func (r registry) sendRequiredServices(reg Registration) error {
-	r.mutex.RLock()
+	r.mutex.RLock() //只读的锁
 	defer r.mutex.RUnlock()
 
 	var p patch
-	for _, serviceReg := range r.registrations {
-		for _, reqService := range reg.RequiredServices {
-			if serviceReg.ServiceName == reqService {
-				p.Added = append(p.Added, patchEntry{
+	for _, serviceReg := range r.registrations { //循环已经注册的服务
+		for _, reqService := range reg.RequiredServices { //循环当前已注册服务所依赖的服务
+			if serviceReg.ServiceName == reqService { //如果相同
+				p.Added = append(p.Added, patchEntry{ //添加到patch中
 					Name: serviceReg.ServiceName,
 					URL:  serviceReg.ServiceURL,
 				})
@@ -91,7 +91,7 @@ func (r registry) sendRequiredServices(reg Registration) error {
 }
 
 func (r registry) sendPatch(p patch, url string) error {
-	d, err := json.Marshal(p)
+	d, err := json.Marshal(p) //转换为json
 	if err != nil {
 		return err
 	}
@@ -136,7 +136,7 @@ func (r *registry) heartbeat(freq time.Duration) {
 						log.Println(err)
 					} else if res.StatusCode == http.StatusOK {
 						log.Printf("Heartbeat check passed for %v", reg.ServiceName)
-						if !success {
+						if !success { //这是如果上一次false这次成功了，就把服务重新加回来
 							r.add(reg)
 						}
 						break
@@ -155,7 +155,7 @@ func (r *registry) heartbeat(freq time.Duration) {
 	}
 }
 
-var once sync.Once
+var once sync.Once //只会运行一次，无论被调用多少次
 
 func SetupRegistryService() {
 	once.Do(func() {

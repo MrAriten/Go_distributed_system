@@ -21,7 +21,7 @@ func main() {
 		ServiceUpdateURL: serviceAddress + "/services",
 		HeartbeatURL:     serviceAddress + "/heartbeat",
 	}
-	ctx, err := service.Start(
+	ctx, err := service.Start( //发送POST请求注册服务
 		context.Background(),
 		host,
 		port,

@@ -1,11 +1,11 @@
 package main
 
 import (
+	"Go_distributed_system/log"
+	"Go_distributed_system/portal"
+	"Go_distributed_system/registry"
+	"Go_distributed_system/service"
 	"context"
-	"distributed/log"
-	"distributed/portal"
-	"distributed/registry"
-	"distributed/service"
 	"fmt"
 	stlog "log"
 )
@@ -26,7 +26,7 @@ func main() {
 			registry.GradingService,
 		},
 		ServiceUpdateURL: serviceAddress + "/services",
-		HeartbeatURL: serviceAddress + "/heartbeat",
+		HeartbeatURL:     serviceAddress + "/heartbeat",
 	}
 
 	ctx, err := service.Start(context.Background(),
@@ -40,6 +40,6 @@ func main() {
 	if logProvider, err := registry.GetProvider(registry.LogService); err != nil {
 		log.SetClientLogger(logProvider, r.ServiceName)
 	}
-	<- ctx.Done()
+	<-ctx.Done()
 	fmt.Println("Shutting down portal.")
 }

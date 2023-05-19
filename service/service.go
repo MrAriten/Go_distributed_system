@@ -15,9 +15,9 @@ func Start(ctx context.Context, host, port string,
 	reg registry.Registration,
 	registerHandlersFunc func()) (context.Context, error) {
 
-	registerHandlersFunc() //这里是log函数的服务注册，用于注册HTTP的handler
-	ctx = startService(ctx, reg.ServiceName, host, port)
-	err := registry.RegisterService(reg)
+	registerHandlersFunc()                               //这里是log函数的服务注册，用于注册HTTP的handler
+	ctx = startService(ctx, reg.ServiceName, host, port) //服务开始
+	err := registry.RegisterService(reg)                 //进行注册，发送POST请求
 	if err != nil {
 		return ctx, err
 	}

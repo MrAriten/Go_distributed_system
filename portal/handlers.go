@@ -1,9 +1,9 @@
 package portal
 
 import (
+	"Go_distributed_system/grades"
+	"Go_distributed_system/registry"
 	"bytes"
-	"distributed/grades"
-	"distributed/registry"
 	"encoding/json"
 	"fmt"
 	"log"

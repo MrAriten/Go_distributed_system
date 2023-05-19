@@ -5,14 +5,14 @@ import (
 	"sync"
 )
 
-type Student struct {
+type Student struct { //学生的个人信息
 	ID        int
 	FirstName string
 	LastName  string
 	Grades    []Grade
 }
 
-func (s Student) Average() float32 {
+func (s Student) Average() float32 { //计算学生的平均成绩
 	var result float32
 	for _, grade := range s.Grades {
 		result += grade.Score
@@ -21,7 +21,7 @@ func (s Student) Average() float32 {
 	return result / float32(len(s.Grades))
 }
 
-type Students []Student
+type Students []Student //学生的集合
 
 var (
 	students      Students

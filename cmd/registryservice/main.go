@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	registry.SetupRegistryService()
+	registry.SetupRegistryService() //启动心跳检测
+
+	//下面这个handle是这里最重要的，写明了注册功能是如何处理请求的
 	http.Handle("/services", &registry.RegistryService{}) //RegistryService{}实现了第二个参数的接口功能//将注册服务函数注册到HTTP处理服务上
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -19,14 +21,14 @@ func main() {
 	srv.Addr = registry.ServerPort
 
 	go func() {
-		log.Println(srv.ListenAndServe())
-		cancel()
+		log.Println(srv.ListenAndServe()) //阻塞监听有无注册事件，并将error输出到标准输出
+		cancel()                          //如果报错则关闭
 	}()
 
 	go func() {
 		fmt.Println("Registry service started. Press any key to stop.")
 		var s string
-		fmt.Scanln(&s)
+		fmt.Scanln(&s) //阻塞等待输入
 		srv.Shutdown(ctx)
 		cancel()
 	}()

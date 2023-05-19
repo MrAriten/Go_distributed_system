@@ -1,8 +1,8 @@
 package log
 
 import (
+	"Go_distributed_system/registry"
 	"bytes"
-	"distributed/registry"
 	"fmt"
 	"net/http"
 
