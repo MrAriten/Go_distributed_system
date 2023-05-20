@@ -36,7 +36,7 @@ func Run(destination string) {
 	log = stlog.New(fileLog(destination), "[go] - ", stlog.LstdFlags)
 }
 
-// 注册响应处理函数
+// 注册请求处理函数
 func RegisterHandlers() {
 	http.HandleFunc("/log", func(w http.ResponseWriter, r *http.Request) { //匿名函数直接作为参数
 		switch r.Method {

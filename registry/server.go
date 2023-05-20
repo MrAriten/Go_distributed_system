@@ -14,17 +14,17 @@ import (
 const ServerPort = ":3000"
 const ServicesURL = "http://localhost" + ServerPort + "/services"
 
-type registry struct { //小写，是私有的
+type registry struct { //小写，是私有的，记录当前所有已注册的服务
 	registrations []Registration //registration.go文件中的结构
 	mutex         *sync.RWMutex  //用来锁上面这个资源防止同时访问
 }
 
 func (r *registry) add(reg Registration) error { //registry类的方法，作用是添加reg到slice中
 	r.mutex.Lock()
-	r.registrations = append(r.registrations, reg)
+	r.registrations = append(r.registrations, reg) //先添加这个服务到注册表中
 	r.mutex.Unlock()
-	err := r.sendRequiredServices(reg) //发送所要依赖的请求，查看patch中是否存在
-	r.notify(patch{                    //add服务的时候进行更新，通知服务器
+	err := r.sendRequiredServices(reg) //发送所要依赖的请求，查看patch中是否存在并更新provider
+	r.notify(patch{                    //add服务的时候通知服务器更新provider
 		Added: []patchEntry{
 			patchEntry{
 				Name: reg.ServiceName,
@@ -153,7 +153,7 @@ func (r *registry) heartbeat(freq time.Duration) {
 			time.Sleep(freq)
 		}
 	}
-}
+} //心跳检测
 
 var once sync.Once //只会运行一次，无论被调用多少次
 
@@ -168,7 +168,7 @@ var reg = registry{ //初始化一个registry结构
 	mutex:         new(sync.RWMutex),
 }
 
-type RegistryService struct{} //空类，只是用于实现方法
+type RegistryService struct{} //空类，只是用于实现方法，用于注册注册服务的handler
 
 func (s RegistryService) ServeHTTP(w http.ResponseWriter, r *http.Request) { //实现了这个函数就成为了Handle函数的第二个接口了
 	log.Println("Request received")

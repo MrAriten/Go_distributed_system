@@ -12,6 +12,7 @@ import (
 )
 
 // 主要功能是向服务器发送注册请求
+// 并设置好该服务的必要handler
 func RegisterService(r Registration) error {
 	heartbeatURL, err := url.Parse(r.HeartbeatURL)
 	if err != nil {

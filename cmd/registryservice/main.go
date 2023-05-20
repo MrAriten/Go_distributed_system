@@ -18,7 +18,7 @@ func main() {
 	defer cancel()
 
 	var srv http.Server
-	srv.Addr = registry.ServerPort
+	srv.Addr = registry.ServerPort //在当前端口进行监听
 
 	go func() {
 		log.Println(srv.ListenAndServe()) //阻塞监听有无注册事件，并将error输出到标准输出

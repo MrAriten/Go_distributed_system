@@ -16,12 +16,12 @@ const (
 	PortalService  = ServiceName("Portald")
 )
 
-type patchEntry struct { //更新的一个条目
+type patchEntry struct { //更新通知包
 	Name ServiceName
 	URL  string
 }
 
-type patch struct { //更新时的所有条目
+type patch struct { //同时更新的所有条目
 	Added   []patchEntry
 	Removed []patchEntry
 }

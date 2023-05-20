@@ -11,6 +11,7 @@ import (
 // Go语言的context库是Go标准库中的一部分，
 // 用于在并发和协程之间传递上下文信息、控制协程的取消操作以及处理超时。
 // context库提供了Context类型，该类型用于创建和传递上下文。
+// 这个函数实现的功能是对每个service的handler进行初始化，并对服务器发送注册请求
 func Start(ctx context.Context, host, port string,
 	reg registry.Registration,
 	registerHandlersFunc func()) (context.Context, error) {
