@@ -1,0 +1,2 @@
+# Go_distributed_system
+一个基于Go语言的简单分布式系统
