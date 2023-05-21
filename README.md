@@ -2,9 +2,9 @@
 
 一个基于Go语言的简单分布式系统，实现了基本的分布式服务
 
-![结构图](C:\GoProject\src\Go_distributed_system\images\结构图.png)
+![结构图](.\结构图.png)
 
-![思维导图](C:\GoProject\src\Go_distributed_system\images\思维导图.jpg)
+![思维导图](.\思维导图.jpg)
 
 ## 特点
 
